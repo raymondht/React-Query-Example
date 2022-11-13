@@ -1,0 +1,14 @@
+.App {
+  font-family: sans-serif;
+  text-align: center;
+}
+.fixed-center {
+  position: fixed;
+  left: 50%;
+  translate: (-50%, 0%);
+}
+.MuiCardHeader-title {
+  font-size: 18px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
