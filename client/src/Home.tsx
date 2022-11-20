@@ -1,4 +1,5 @@
 import { Alert, CircularProgress } from "@mui/material";
+import React from "react";
 import { useEffect, useState } from "react";
 import PokeCardList from "./components/PokeCardList";
 import "./styles.css";
@@ -10,7 +11,11 @@ const Home = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    console.log("Sending a request");
+    fetch("https://ps94fl-5000.preview.csb.app/api")
+      .then((response) => response.json())
+      .then((data) => {
+        console.log({ data });
+      });
     fetch("https://pokeapi.co/api/v2/pokemon/")
       .then((response) => response.json())
       .then((data) => {
