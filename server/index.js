@@ -17,9 +17,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // API calls
 app.get("/api/pokemon", async (req, res) => {
-  console.log("hello");
   const response = await axios.get("https://pokeapi.co/api/v2/pokemon/");
-  res.send({ response });
+  res.send(response.data.results);
 });
 
 app.post("/api/world", (req, res) => {

@@ -5,10 +5,7 @@ import { queryKeyFactory } from '../../query-key-factory';
 const getAllPokemon = async (): Promise<Array<any>> => {
     const api = new AxiosApi();
     try {
-        const response = await api.get(
-            "pokemon",
-        );
-        console.log({response});
+        const response = await api.get("pokemon");
         return response.data;
     } catch (error: any) {
         if (error && error.response) {

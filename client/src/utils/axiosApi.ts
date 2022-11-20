@@ -11,7 +11,7 @@ class AxiosApi {
   apiConfig: AxiosRequestConfig;
 
   constructor() {
-    this.apiUrl = "https://localhost:5000/api/"; // https://localhost:5000
+    this.apiUrl = "http://localhost:5000/api/"; // https://localhost:5000
     this.cancelToken = generateCancelToken();
     this.apiConfig = { cancelToken: this.cancelToken.token };
   }

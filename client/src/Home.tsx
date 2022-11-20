@@ -7,7 +7,7 @@ import useAllPokemon from "./utils/react-query/query/pokemon/useAllPokemon";
 
 const Home = () => {
   const {data: pokemonList, isLoading: isLoadingAllPokemon, isError: isErrorLoadingAllPokemon} = useAllPokemon();
-
+  console.log({pokemonList});
   const loaderView = isLoadingAllPokemon && <CircularProgress className="fixed-center" />;
   const pokemonListView = !isLoadingAllPokemon && !isErrorLoadingAllPokemon && (
     <PokeCardList pokemonList={pokemonList} />
