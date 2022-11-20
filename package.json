@@ -1,36 +1,24 @@
 {
-  "name": "example-create-react-app-express",
+  "name": "pup-query",
   "version": "1.0.0",
-  "description": "Example on using create-react-app with a Node Express Backend",
+  "description": "Pup",
   "author": {
-    "name": "Esau Silva",
-    "twitter": "@_esausilva",
-    "url": "https://esausilva.com"
+    "name": "Raymond Hieu Tran"
   },
   "license": "MIT",
   "scripts": {
     "client": "cd client && pnpm run start",
-    "server": "nodemon server.js",
+    "server": "cd server && pnpm run start",
     "dev": "concurrently --kill-others-on-fail \"pnpm run server\" \"pnpm run client\"",
     "dev:server": "cd client && yarn build && cd .. && yarn start",
     "start": "node server.js"
   },
   "dependencies": {
-    "body-parser": "^1.19.0",
-    "cors": "^2.8.5",
-    "express": "^4.17.1"
+    "body-parser": "^1.19.0"
   },
   "devDependencies": {
-    "@types/react-dom": "^18.0.9",
     "concurrently": "^4.1.0",
     "nodemon": "^2.0.1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/esausilva/example-create-react-app-express.git"
-  },
-  "bugs": {
-    "url": "https://github.com/esausilva/example-create-react-app-express/issues"
   },
   "keywords": [
     "node",

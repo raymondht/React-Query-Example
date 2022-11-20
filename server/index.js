@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const bodyParser = require("body-parser");
+const axios = require("axios");
 
 const cors = require("cors");
 const app = express();
@@ -15,8 +16,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // API calls
-app.get("/api", (req, res) => {
-  res.send({ express: "Hello From Express" });
+app.get("/api/pokemon", async (req, res) => {
+  console.log("hello");
+  const response = await axios.get("https://pokeapi.co/api/v2/pokemon/");
+  res.send({ response });
 });
 
 app.post("/api/world", (req, res) => {

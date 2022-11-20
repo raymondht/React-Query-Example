@@ -11,7 +11,7 @@ class AxiosApi {
   apiConfig: AxiosRequestConfig;
 
   constructor() {
-    this.apiUrl = "https://ps94fl-5000.preview.csb.app/";
+    this.apiUrl = "https://localhost:5000/api/"; // https://localhost:5000
     this.cancelToken = generateCancelToken();
     this.apiConfig = { cancelToken: this.cancelToken.token };
   }
