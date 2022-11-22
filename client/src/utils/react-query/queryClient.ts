@@ -1,96 +1,116 @@
-import { QueryCache, QueryClient } from '@tanstack/react-query';
+import { MutationCache, Query, QueryCache, QueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { toast } from 'react-toastify';
 
-const queryErrorHandler = (error: unknown) => {
-    if (error instanceof AxiosError) {
-        // Trigger a snack bar for user's error
+const queryErrorHandler = (error: unknown, query: Query) => {
+    // 🎉 only show error toasts if we already have data in the cache
+    // which indicates a failed background update
+    if (query.state.data !== undefined) {
+        showToast(error as AxiosError)
     }
+};
+
+const mutationErrorHandler = (error: unknown) => {
+    showToast(error as AxiosError)
+};
+
+const showToast = (error: AxiosError)  => {
+    toast.error(
+        `Something went wrong. ${
+            error.response?.statusText
+        } `,
+        {
+            position: 'bottom-center',
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            theme: 'colored',
+        }
+    );
 }
 
 export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            refetchOnWindowFocus:
-                process.env.NODE_ENV == 'development' ? false : true,
-            useErrorBoundary: (error: any) =>  error.response?.status >= 500;
-            retry: 1, //Temp
+            refetchOnWindowFocus: process.env.NODE_ENV == 'development' ? false : true,
+            retry: 1, //Temp,
         },
     },
     queryCache: new QueryCache({
-        onError: queryErrorHandler
+        onError: queryErrorHandler,
+    }),
+    mutationCache: new MutationCache({
+        onError: mutationErrorHandler
     }),
 });
 
-// export type ArchiveUnArchiveFormError = { message: string };
-// export type ErrorResponse = { errorMessage: string };
+export type ErrorResponse = { errorMessage: string };
 
-// export const buildErrorResponse = (
-//     e: any,
-//     message: string,
-//     domainAlias: string,
-//     formId?: string,
-// ): ErrorResponse => {
-//     try {
-//         const error = e as AxiosError;
+export const buildErrorResponse = (
+    e: any,
+    message: string,
+    errorContext: object
+): ErrorResponse => {
+    try {
+        const error = e as AxiosError;
 
-//         if (!error.response) throw new Error('No response in error object');
+        if (!error.response) throw new Error('No response in error object');
 
-//         const {
-//             response: { data, status, statusText },
-//         } = error;
-//         const errorResponse = JSON.stringify({
-//             data,
-//             status,
-//             statusText,
-//         });
-//         conso(
-//             `Message: ${message} \n
-//                   Domain: ${domainAlias} \n
-//                   FormId: ${formId ?? 'Not provided'} \n
-//                   Response: ${errorResponse}`,
-//             'error',
-//         );
+        const {
+            response: { data, status, statusText },
+        } = error;
+        const errorResponse = JSON.stringify({
+            data,
+            status,
+            statusText,
+        });
 
-//         let errorMessage;
-//         switch (status) {
-//             case 500:
-//                 errorMessage = '(500)';
-//                 break;
-//             case 400:
-//                 if (typeof data === 'object' && data !== null && 'errors' in data) {
-//                     // eslint-disable-next-line @typescript-eslint/dot-notation
-//                     errorMessage = buildErrorMessageFromModelState(data['errors']);
-//                 } else {
-//                     errorMessage = data;
-//                 }
-//                 break;
-//             default:
-//                 errorMessage = data;
-//         }
+        console.error(
+            `Message: ${message} \n
+             Response: ${errorResponse} \n
+             Error Context: ${errorContext}`
+        );
 
-//         const result = {
-//             errorMessage: errorMessage,
-//         };
+        let errorMessage;
+        switch (status) {
+            case 500:
+                errorMessage = '(500)';
+                break;
+            case 400:
+                if (typeof data === 'object' && data !== null && 'errors' in data) {
+                    // eslint-disable-next-line @typescript-eslint/dot-notation
+                    errorMessage = buildErrorMessageFromModelState(data['errors']);
+                } else {
+                    errorMessage = data;
+                }
+                break;
+            default:
+                errorMessage = data;
+        }
 
-//         return result;
-//     } catch (err: any) {
-//         logger(JSON.stringify(err), 'error');
-//         return {
-//             errorMessage: languageItems.ERROR_UNKNOWN,
-//         };
-//     }
-// };
+        const result = {
+            errorMessage: errorMessage,
+        };
 
-// const buildErrorMessageFromModelState = (errors: Array<string[]>): string => {
-//     const keys = Object.keys(errors);
+        return result;
+    } catch (err: any) {
+        logger(JSON.stringify(err), 'error');
+        return {
+            errorMessage: languageItems.ERROR_UNKNOWN,
+        };
+    }
+};
 
-//     const result: string[] = [];
-//     for (const key of keys) {
-//         if (!key || !errors[key]) continue;
+const buildErrorMessageFromModelState = (errors: Array<string[]>): string => {
+    const keys = Object.keys(errors);
 
-//         const x: string[] = errors[key];
-//         result.push(`${key} - ${x.join()}`);
-//     }
+    const result: string[] = [];
+    for (const key of keys) {
+        if (!key || !errors[key]) continue;
 
-//     return result.join('.  ');
-// };
+        const x: string[] = errors[key];
+        result.push(`${key} - ${x.join()}`);
+    }
+
+    return result.join('.  ');
+};

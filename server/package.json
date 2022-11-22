@@ -7,7 +7,7 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "set DEBUG=express:* && nodemon server.js"
+    "start": "set DEBUG=express:* && nodemon index.js"
   },
   "dependencies": {
     "axios": "^1.1.3",

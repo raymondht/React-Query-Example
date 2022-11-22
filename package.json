@@ -11,7 +11,7 @@
     "server": "cd server && pnpm run start",
     "dev": "concurrently --kill-others-on-fail \"pnpm run server\" \"pnpm run client\"",
     "dev:server": "cd client && yarn build && cd .. && yarn start",
-    "start": "node server.js"
+    "start": "pnpm run -r --stream start"
   },
   "dependencies": {
     "body-parser": "^1.20.1"
