@@ -48,14 +48,12 @@ export type ErrorResponse = { errorMessage: string };
 
 export const buildErrorResponse = (
     e: any,
-    message: string,
     errorContext: object
 ): ErrorResponse => {
     try {
         const error = e as AxiosError;
 
         if (!error.response) throw new Error('No response in error object');
-
         const {
             response: { data, status, statusText },
         } = error;
@@ -65,12 +63,6 @@ export const buildErrorResponse = (
             statusText,
         });
 
-        console.error(
-            `Message: ${message} \n
-             Response: ${errorResponse} \n
-             Error Context: ${errorContext}`
-        );
-
         let errorMessage;
         switch (status) {
             case 500:
@@ -78,15 +70,22 @@ export const buildErrorResponse = (
                 break;
             case 400:
                 if (typeof data === 'object' && data !== null && 'errors' in data) {
-                    // eslint-disable-next-line @typescript-eslint/dot-notation
-                    errorMessage = buildErrorMessageFromModelState(data['errors']);
+                    // errorMessage = buildErrorMessageFromModelState((data as any)['errors']);
+                    console.error({data});
+                    errorMessage = 'Errors'
                 } else {
-                    errorMessage = data;
+                    errorMessage = data as string;
                 }
                 break;
             default:
-                errorMessage = data;
+                errorMessage = data as string;
         }
+
+        console.error(
+            `Message: ${errorMessage} \n
+             Response: ${errorResponse} \n
+             Error Context: ${errorContext}`
+        );
 
         const result = {
             errorMessage: errorMessage,
@@ -94,23 +93,23 @@ export const buildErrorResponse = (
 
         return result;
     } catch (err: any) {
-        logger(JSON.stringify(err), 'error');
+        console.error(JSON.stringify(err), 'error');
         return {
-            errorMessage: languageItems.ERROR_UNKNOWN,
+            errorMessage: "Oops, there was something wrong.",
         };
     }
 };
 
-const buildErrorMessageFromModelState = (errors: Array<string[]>): string => {
-    const keys = Object.keys(errors);
+// const buildErrorMessageFromModelState = (errors: Array<string[]>): string => {
+//     const keys = Object.keys(errors);
 
-    const result: string[] = [];
-    for (const key of keys) {
-        if (!key || !errors[key]) continue;
+//     const result: string[] = [];
+//     for (const key of keys) {
+//         if (!key || !errors[key]) continue;
 
-        const x: string[] = errors[key];
-        result.push(`${key} - ${x.join()}`);
-    }
+//         const x: string[] = errors[key];
+//         result.push(`${key} - ${x.join()}`);
+//     }
 
-    return result.join('.  ');
-};
+//     return result.join('.  ');
+// };

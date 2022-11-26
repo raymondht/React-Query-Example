@@ -6,14 +6,17 @@ import "./styles.css";
 import useAllPokemon from "./utils/react-query/query/pokemon/useAllPokemon";
 
 const Home = () => {
-  const {data: pokemonList, isLoading: isLoadingAllPokemon, isError: isErrorLoadingAllPokemon} = useAllPokemon();
+  const {data: pokemonList, isLoading: isLoadingAllPokemon, error: errorLoadingAllPokemon} = useAllPokemon();
   console.log({pokemonList});
   const loaderView = isLoadingAllPokemon && <CircularProgress className="fixed-center" />;
-  const pokemonListView = !isLoadingAllPokemon && !isErrorLoadingAllPokemon && (
+  const errorView = errorLoadingAllPokemon && <Alert severity="error">{errorLoadingAllPokemon.errorMessage}</Alert>
+  const pokemonListView = pokemonList && (
     <PokeCardList pokemonList={pokemonList} />
   );
+
   return (
     <>
+      {errorView}
       {loaderView}
       {pokemonListView}
     </>
