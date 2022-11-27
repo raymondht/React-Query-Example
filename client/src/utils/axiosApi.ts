@@ -16,7 +16,7 @@ class AxiosApi {
     this.apiConfig = { cancelToken: this.cancelToken.token };
   }
 
-  get(urlAction = "", additionalConfig: AxiosRequestConfig = {}) {
+  get(url = "", additionalConfig: AxiosRequestConfig = {}) {
     const config: AxiosRequestConfig = {
       ...this.apiConfig,
       headers: {
@@ -27,7 +27,7 @@ class AxiosApi {
       },
       ...additionalConfig,
     };
-    return axios.get(`${this.apiUrl}${urlAction}`, config);
+    return axios.get(`${url}`, config);
   }
 
   post(

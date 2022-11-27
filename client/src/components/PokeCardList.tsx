@@ -1,9 +1,10 @@
 import { Grid } from "@mui/material";
 import * as React from "react";
+import { PokemonListData } from "../utils/react-query/query/pokemon/useInfinitePokemon";
 import PokeCard from "./PokeCard";
 
 type PokeCardListProps = {
-  pokemonList: any[];
+  pokemonList: PokemonListData[];
 };
 const PokeCardList = ({ pokemonList }: PokeCardListProps) => {
   return (

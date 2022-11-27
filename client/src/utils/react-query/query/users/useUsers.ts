@@ -3,10 +3,17 @@ import { useQuery } from '@tanstack/react-query'
 import { queryKeyFactory } from '../../query-key-factory';
 import { ErrorResponse, buildErrorResponse } from '../../queryClient';
 
-const getAllPokemon = async (): Promise<Array<any>> => {
+export type User = {
+    id: string,
+    name: string,
+    avatar: string
+};
+
+const fetchUsers = async (): Promise<User[]> => {
     const api = new AxiosApi();
     try {
-        const response = await api.get("pokemon");
+        const response = await api.get('http://localhost:5000/api/users');
+        console.log({response});
         return response.data;
     } catch (error: any) {
         const errorContext = {
@@ -17,14 +24,14 @@ const getAllPokemon = async (): Promise<Array<any>> => {
     }
 };
 
-const useAllPokemon = (isEnabled?: boolean) => {
-    return useQuery<Array<any>, ErrorResponse>(
-        queryKeyFactory.pokemonKeys.all,
-        getAllPokemon,
+const useUsers = (isEnabled?: boolean) => {
+    return useQuery<User[], ErrorResponse>(
+        queryKeyFactory.userKeys.all,
+        fetchUsers,
         {
             enabled: isEnabled,
         },
     );
 };
 
-export default useAllPokemon;
+export default useUsers;

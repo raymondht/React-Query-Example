@@ -37,9 +37,11 @@ export default function NavBar() {
         value={value}
         onChange={handleChange}
         aria-label="nav tabs example"
+
         centered
       >
-        <LinkTab label="Home" href="/" />
+        <LinkTab label="Users" href="/" />
+        <LinkTab label="All Pokemons" href="/all-pokemon" />
         <LinkTab label="Favorites" href="/favorites" />
       </Tabs>
     </Box>
