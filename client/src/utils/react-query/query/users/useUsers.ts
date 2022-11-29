@@ -13,7 +13,6 @@ const fetchUsers = async (): Promise<User[]> => {
     const api = new AxiosApi();
     try {
         const response = await api.get('http://localhost:5000/api/users');
-        console.log({response});
         return response.data;
     } catch (error: any) {
         const errorContext = {
@@ -30,6 +29,7 @@ const useUsers = (isEnabled?: boolean) => {
         fetchUsers,
         {
             enabled: isEnabled,
+            useErrorBoundary: (error) => error.statusCode >= 500,
         },
     );
 };

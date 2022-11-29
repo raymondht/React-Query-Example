@@ -6,19 +6,17 @@ const queryErrorHandler = (error: unknown, query: Query) => {
     // 🎉 only show error toasts if we already have data in the cache
     // which indicates a failed background update
     if (query.state.data !== undefined) {
-        showToast(error as AxiosError)
+        showToast(error as ErrorResponse);
     }
 };
 
 const mutationErrorHandler = (error: unknown) => {
-    showToast(error as AxiosError)
+    showToast(error as ErrorResponse)
 };
 
-const showToast = (error: AxiosError)  => {
+const showToast = (error: ErrorResponse)  => {
     toast.error(
-        `Something went wrong. ${
-            error.response?.statusText
-        } `,
+        `Something went wrong. ${ error.errorMessage} `,
         {
             position: 'bottom-center',
             autoClose: 3000,
@@ -32,19 +30,19 @@ const showToast = (error: AxiosError)  => {
 export const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
-            refetchOnWindowFocus: process.env.NODE_ENV == 'development' ? false : true,
-            retry: 1, //Temp,
+            refetchOnWindowFocus:  true,
+            retry: 1
         },
+        mutations: {
+            onError: mutationErrorHandler
+        }
     },
     queryCache: new QueryCache({
         onError: queryErrorHandler,
-    }),
-    mutationCache: new MutationCache({
-        onError: mutationErrorHandler
-    }),
+    })
 });
 
-export type ErrorResponse = { errorMessage: string };
+export type ErrorResponse = { statusCode: number, errorMessage: string };
 
 export const buildErrorResponse = (
     e: any,
@@ -69,9 +67,9 @@ export const buildErrorResponse = (
                 errorMessage = '(500)';
                 break;
             case 400:
-                if (typeof data === 'object' && data !== null && 'errors' in data) {
+               if (typeof data === 'object' && data !== null && 'errors' in data) {
                     // errorMessage = buildErrorMessageFromModelState((data as any)['errors']);
-                    console.error({data});
+                    console.error('Error', {data});
                     errorMessage = 'Errors'
                 } else {
                     errorMessage = data as string;
@@ -88,13 +86,16 @@ export const buildErrorResponse = (
         );
 
         const result = {
+            statusCode: status,
             errorMessage: errorMessage,
         };
+        console.log({result});
 
         return result;
     } catch (err: any) {
         console.error(JSON.stringify(err), 'error');
         return {
+            statusCode: 500,
             errorMessage: "Oops, there was something wrong.",
         };
     }

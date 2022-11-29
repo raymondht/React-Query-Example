@@ -1,6 +1,5 @@
 import { Alert, CircularProgress, Grid } from "@mui/material";
 import React from "react";
-import { useEffect, useState } from "react";
 import useUsers from '../utils/react-query/query/users/useUsers';
 import UserCard from "../components/UserCard";
 
@@ -9,9 +8,10 @@ const Users = () => {
     data: users,
     isLoading: isLoadingUsers,
     error: errorLoadingUsers,
+    isRefetchError
   } = useUsers();
   const loaderView = isLoadingUsers && <CircularProgress className="fixed-center" />;
-  const errorView = errorLoadingUsers && <Alert severity="error">{errorLoadingUsers.errorMessage}</Alert>
+  const errorView = errorLoadingUsers && <Alert severity="error">Oops. There was an error fetching the user. {errorLoadingUsers.errorMessage}</Alert>
 
   const userListView = users && (
     users.map(user => {
@@ -27,7 +27,7 @@ const Users = () => {
 
   return (
     <>
-      {errorView}
+      {!isRefetchError && errorView}
       {loaderView}
       <Grid container direction="row" justifyContent="center" spacing={5}>
         {userListView}

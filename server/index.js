@@ -15,11 +15,6 @@ app.use(
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// API calls
-// app.get("/api/pokemon", async (req, res) => {
-//   const response = await axios.get("https://pokeapi.co/api/v2/pokemon/");
-//   res.send(response.data.results);
-// });
 
 app.get("/api/users", (req, res) => {
   const users = [
@@ -32,6 +27,9 @@ app.get("/api/users", (req, res) => {
   res.send(
     users
   );
+  return;
+  // res.status(400);
+  // res.send('We are currently experienced high traffic. Please try again later.');
 });
 
 if (process.env.NODE_ENV === "production") {
