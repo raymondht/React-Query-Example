@@ -1,3 +1,5 @@
 ### Pup Query Example
 
-Coming soon
+## Getting started
+1. `pnpm install`
+2. `pnpm run start`
